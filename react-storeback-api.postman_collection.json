@@ -1,0 +1,459 @@
+{
+	"info": {
+		"_postman_id": "667d0146-7c6b-4b2f-be34-363586298729",
+		"name": "react-storeback-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User Logon",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "57652d90-6a52-46e9-a9b6-dbb76fdd3f10",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.globals.set(\"access_token\", jsonData.access_token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\":\"ed\",\n    \"password\":\"iran\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/token",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User GetAll",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/users",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Create",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c3d47f37-a5bb-4b62-a829-d85598eed57a",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.globals.set(\"insertedId\", jsonData.insertedId);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"test\",\n  \"password\": \"test\",\n  \"roles\": \"test\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/users",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Delete",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/users/{{insertedId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users",
+						"{{insertedId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Report GetAll",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/reports",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"reports"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Report Create",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8e470e4d-27a5-4174-8a19-b93455397fff",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.globals.set(\"insertedId\", jsonData.insertedId);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"job\": \"1\",\n  \"date\": \"2020-10-10\",\n  \"po\": \"1\",\n  \"customerName\": \"customer one\",\n  \"customerStreet\": \"\",\n  \"customerCity\": \"\",\n  \"custoemrState\": \"\",\n  \"customerZip\": \"\",\n  \"customerPhone\": \"\",\n  \"machineType\": \"\",\n  \"machineSerial\": \"\",\n  \"control\": \"\",\n  \"controlSerial\": \"\",\n  \"plasmaType\": \"\",\n  \"plasmaModel\": \"\",\n  \"plasmaSerial\": \"\",\n  \"oxyFuel\": true,\n  \"torches\": 2,\n  \"drive\": \"\",\n  \"driveSerial\": \"\",\n  \"reportedTrouble\": \"\",\n  \"materials\": [\n    {\n      \"quantity\": 1,\n      \"itemNo\": \"1\",\n      \"itemName\": \"test\"\n    }\n  ],\n  \"servicePerformed\": \"\",\n  \"issues\": [\n    {\n      \"description\": \"test\",\n      \"resolved\": false\n    }\n  ],\n  \"logs\": [\n    {\n      \"date\": \"\",\n      \"on\": \"\",\n      \"off\": \"\",\n      \"mileage\": 10,\n      \"hours\": 3.2,\n      \"lodging\": false,\n      \"toll\": false\n    }\n  ],\n  \"completed\": true,\n  \"satifaction\": true,\n  \"customerSignature\": \"\",\n  \"customerSignatureDate\": \"\",\n  \"servicemanSignature\": \"\",\n  \"servicemanSignatureDate\": \"\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/reports",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"reports"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Report Get",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/reports/{{insertedId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"reports",
+						"{{insertedId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Report Update",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"_id\":\"{{insertedId}}\", \n    \"servicemanSignature\": \"Keith Humphrey\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/reports",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"reports"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Report Delete",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/reports/{{insertedId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"reports",
+						"{{insertedId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Item GetList",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/items",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"items"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TSheets Current User",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "tokenType",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "accessToken",
+							"value": "S.5__8e128a072a0b7cebf73f4a5759297c039b50f6c4",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://rest.tsheets.com/api/v1/current_user",
+					"protocol": "https",
+					"host": [
+						"rest",
+						"tsheets",
+						"com"
+					],
+					"path": [
+						"api",
+						"v1",
+						"current_user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Tsheets Jobcodes",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "tokenType",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "accessToken",
+							"value": "S.5__8e128a072a0b7cebf73f4a5759297c039b50f6c4",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://rest.tsheets.com/api/v1/jobcodes?page=1",
+					"protocol": "https",
+					"host": [
+						"rest",
+						"tsheets",
+						"com"
+					],
+					"path": [
+						"api",
+						"v1",
+						"jobcodes"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Tsheets Timesheets",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "tokenType",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "accessToken",
+							"value": "S.5__8e128a072a0b7cebf73f4a5759297c039b50f6c4",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://rest.tsheets.com/api/v1/timesheets?jobcode_ids=11474733&start_date=2020-12-01",
+					"protocol": "https",
+					"host": [
+						"rest",
+						"tsheets",
+						"com"
+					],
+					"path": [
+						"api",
+						"v1",
+						"timesheets"
+					],
+					"query": [
+						{
+							"key": "jobcode_ids",
+							"value": "11474733"
+						},
+						{
+							"key": "start_date",
+							"value": "2020-12-01"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "1753ef27-9178-45e9-87d1-13d177cd4bdd",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "c3f4037f-e699-4a78-93be-adea970f2077",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "b0bb0809-b79a-4d6c-853c-1415dee2f76b",
+			"key": "url",
+			"value": "http://localhost:3030"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
