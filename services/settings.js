@@ -1,11 +1,11 @@
-const menuSchema = require('../schema/menu')
+const settingSchema = require('../schema/setting')
 const moment = require('moment-timezone')
 const dateFormat = 'YYYY-MM-DDTHH:mm:SS'
 const { ObjectId } = require('mongodb')
 
 const updateOne = {
   body: {
-    menuSchema
+    settingSchema
   }
 }
 
@@ -18,38 +18,40 @@ const deleteOne = {
 const single = {
   schema: {
     response: {
-      200: { menuSchema }
+      200: { settingSchema }
     }
   }
 }
 
 const multiple = {
   200: {
-    description: 'menus',
+    description: 'settings',
     type: 'array',
     items: {
       type: 'object',
       properties: {
-        result: { menuSchema }
+        result: { settingSchema }
       }
     }
   }
 }
 
 async function routes (fastify, options) {
-  const menusCollection = fastify.mongo.db.collection('menus')
   const settingsCollection = fastify.mongo.db.collection('settings')
   const jwt = fastify.jwt
 
-  fastify.patch('/menus', { schema: updateOne }, async function (
+  fastify.patch('/settings', { schema: updateOne }, async function (
     request,
     reply
   ) {
     const { body } = request
+
+    console.log(body)
+
     const id = body._id
     delete body._id
 
-    const result = await menusCollection.updateOne(
+    const result = await settingsCollection.updateOne(
       {
         _id: ObjectId(id)
       },
@@ -66,54 +68,50 @@ async function routes (fastify, options) {
     return body
   })
 
-  fastify.get('/menus/:id', multiple, async (request, reply) => {
-    const result = await menusCollection.findOne({
-      _id: ObjectId(request.params.id)
-    })
+  fastify.get('/settings/:names', multiple, async (request, reply) => {
+    const { names } = request.params
 
-    if (!result) {
-      const err = new Error()
-      err.statusCode = 400
-      err.message = `id: ${id}.`
-      throw err
-    }
+    const arrayOfNames = names.split('~')
+
+    const pipeline = [
+      {
+        $match: {
+          name: {
+            $in: arrayOfNames
+          }
+        }
+      }
+    ]
+
+    const result = await settingsCollection.aggregate(pipeline).toArray()
 
     return result
   })
 
   fastify.delete(
-    '/menus/:id',
+    '/settings/:id',
     { schema: deleteOne },
     async (request, reply) => {
       const {
         params: { id }
       } = request
-      const result = await menusCollection.deleteOne({ _id: ObjectId(id) })
+      const result = await settingsCollection.deleteOne({ _id: ObjectId(id) })
       return result
     }
   )
 
-  fastify.get('/menus', multiple, async (request, reply) => {
+  fastify.get('/settings', multiple, async (request, reply) => {
     try {
-      const menus = await menusCollection
+      const settings = await settingsCollection
         .find({})
         .sort({ index: 1 })
         .toArray()
 
-      const settings = await settingsCollection
-        .find({
-          name: {
-            $in: ['menu_tabs', 'menu_hamburger']
-          }
-        })
-        .toArray()
-
       return {
-        title: 'Menus',
+        title: 'Settings',
         slots: {
-          heading: 'Welcome to Menus'
+          heading: 'Welcome to Settings'
         },
-        menus,
         settings
       }
     } catch (err) {
@@ -121,22 +119,22 @@ async function routes (fastify, options) {
     }
   })
 
-  fastify.post('/menus-order', {}, async function (request, reply) {
+  fastify.post('/settings-order', {}, async function (request, reply) {
     const { body } = request
 
     const updates = []
-    body.map(menu => {
+    body.map(setting => {
       updates.push({
         updateOne: {
           filter: {
-            _id: ObjectId(menu._id)
+            _id: ObjectId(setting._id)
           },
-          update: { $set: { index: menu.index } }
+          update: { $set: { index: setting.index } }
         }
       })
     })
 
-    const result = await menusCollection.bulkWrite(updates)
+    const result = await settingsCollection.bulkWrite(updates)
     const { insertedCount } = result
 
     return insertedCount

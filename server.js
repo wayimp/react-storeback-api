@@ -17,6 +17,7 @@ fastify.register(require('fastify-cors'), {
 fastify.register(require('./mongodb'))
 fastify.register(require('./services/users'))
 fastify.register(require('./services/menus'))
+fastify.register(require('./services/settings'))
 
 //fastify.register(require('./plugins/authenticate'))
 
