@@ -141,6 +141,69 @@ async function routes (fastify, options) {
 
     return insertedCount
   })
+
+  const fillTree = tree => {
+    return tree.map(branch => {
+      branch.text = branch.title
+      branch.as = branch.title
+      branch.href = branch.title
+
+      if (branch.children) {
+        branch.items = fillTree(branch.children)
+      } else {
+        branch.expanded = false
+      }
+
+      return branch
+    })
+  }
+
+  fastify.get('/appData', async (request, reply) => {
+    try {
+      const settings_pipeline = [
+        {
+          $match: {
+            name: {
+              $in: ['menu_hamburger', 'menu_tabs']
+            }
+          }
+        }
+      ]
+
+      const settings = await settingsCollection
+        .aggregate(settings_pipeline)
+        .toArray()
+
+      const menu_hamburger_setting = settings.find(
+        menu => menu.name == 'menu_hamburger'
+      )
+      const menu_tabs_setting = settings.find(menu => menu.name == 'menu_tabs')
+
+      const menus_pipeline = [
+        {
+          $match: {
+            _id: {
+              $in: settings.map(setting => ObjectId(setting.value))
+            }
+          }
+        }
+      ]
+
+      const menus = await menusCollection.aggregate(menus_pipeline).toArray()
+
+      const hamburger_menu = menus.find(
+        menu => menu._id == menu_hamburger_setting.value
+      )
+      const tabs_menu = menus.find(menu => menu._id == menu_tabs_setting.value)
+
+      const menuItems = fillTree(hamburger_menu.tree)
+      const tabs = fillTree(tabs_menu.tree)
+
+      return { menu: { items: menuItems }, tabs }
+    } catch (err) {
+      reply.send(err)
+    }
+  })
 }
 
 module.exports = routes
